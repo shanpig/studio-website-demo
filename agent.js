@@ -11,16 +11,53 @@ const q=[
 const styleCatalog={quiet:{title:'寧靜留白',desc:'高質感、影像與大幅留白',short:'留白與光影',headline:'給生活留一點空白。'},bold:{title:'未來鋒芒',desc:'強對比、前衛、科技感',short:'大膽、鮮明。',headline:'讓想法走在未來之前。'},warm:{title:'溫暖日常',desc:'親切、柔和、帶有人味',short:'讓相遇更有溫度。',headline:'每一次相遇，都從理解開始。'},clear:{title:'清晰專業',desc:'架構明確、資訊效率優先',short:'清楚、可靠。',headline:'把複雜變得簡單。'}};
 const industryLabels={design:'設計／創意工作室',business:'企業／顧問服務',wellness:'教練／生活服務',tech:'科技／軟體服務'};
 const labelFor=(key,value)=>q.find(item=>item.key===key)?.options.find(item=>item[0]===value)?.[1]||'尚未選擇';
-const msgs=$('messages'),suggestions=$('suggestions'),panel=$('contextPanel'),context=$('contextContent'),mascot=$('mascot');
+const msgs=$('messages'),suggestions=$('suggestions'),mascot=$('mascot');
+let panel=null,context=null,topLayer=20;
+const floatingPanels=Object.fromEntries([...document.querySelectorAll('.hud-panel')].map(e=>[e.dataset.mode,e]));
 function mood(type){mascot.dataset.mood=type;clearTimeout(mood.timeout);mood.timeout=setTimeout(()=>mascot.dataset.mood='idle',1100)}
 function addMessage(who,text){const wrap=document.createElement('div');wrap.className='msg '+who;
  if(who==='assistant'){const ava=document.createElement('div');ava.className='avatar';ava.textContent='◈';ava.setAttribute('aria-hidden','true');wrap.append(ava)}
  const bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=text;wrap.append(bubble);msgs.append(wrap);msgs.scrollTop=msgs.scrollHeight;mood(who==='assistant'?'speaking':'thinking');return wrap}
 function quick(items){suggestions.replaceChildren();items.forEach(({text,fn})=>{const b=document.createElement('button');b.type='button';b.textContent=text;b.addEventListener('click',fn);suggestions.append(b)})}
 function setMode(mode){state.mode=mode;const labels={home:'就緒 · 對話式建站探索',wizard:'正在釐清你的網站需求',styles:'選擇喜歡的網站視覺',review:'整理精準修改意見',brief:'專案需求摘要已準備'};$('modeLabel').textContent=labels[mode]||labels.home}
-function closePanel(){panel.classList.add('hidden');context.replaceChildren();$('contextTitle').textContent='互動元件'}
-function openPanel(title){$('contextTitle').textContent=title;context.replaceChildren();panel.classList.remove('hidden');setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}),40)}
-$('closeContext').addEventListener('click',()=>{closePanel();addMessage('assistant','已將介面收起。你可以直接用文字繼續，或選下方任一個操作。');homeQuick()});
+function closePanel(){Object.values(floatingPanels).forEach(e=>{e.classList.add('hidden');e.querySelector('.hud-content').replaceChildren()});panel=null;context=null}
+function openPanel(title){
+ panel=floatingPanels[state.mode]||floatingPanels.wizard;
+ context=panel.querySelector('.hud-content');
+ panel.querySelector('.hud-title').textContent=title;
+ context.replaceChildren();
+ panel.classList.remove('hidden');
+ const wrapper=panel.closest('.float-position');wrapper.style.zIndex=String(++topLayer);
+ if(matchMedia('(max-width: 800px)').matches)setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+}
+document.querySelectorAll('.hud-close').forEach(btn=>btn.addEventListener('click',()=>{
+ const p=btn.closest('.hud-panel');p.classList.add('hidden');
+ if(p===panel){panel=null;context=null}
+}));
+document.querySelectorAll('.hud-panel').forEach(p=>{
+ p.addEventListener('pointerdown',()=>{p.closest('.float-position').style.zIndex=String(++topLayer)}, {passive:true});
+});
+/* Rearrange HUD windows by dragging headers on desktop; panels can overlap or sit side by side. */
+document.querySelectorAll('.hud-window-head').forEach(header=>{
+ header.style.cursor='grab';let drag=null;
+ header.addEventListener('pointerdown',event=>{
+   if(event.target.closest('button')||matchMedia('(max-width: 800px)').matches)return;
+   const wrapper=header.closest('.float-position');
+   drag={x:event.clientX,y:event.clientY,dx:Number(wrapper.dataset.dx||0),dy:Number(wrapper.dataset.dy||0)};
+   wrapper.style.zIndex=String(++topLayer);
+   header.setPointerCapture(event.pointerId);
+   header.style.cursor='grabbing';
+ });
+ header.addEventListener('pointermove',event=>{
+   if(!drag)return;
+   const wrapper=header.closest('.float-position');
+   const dx=drag.dx+event.clientX-drag.x,dy=drag.dy+event.clientY-drag.y;
+   wrapper.dataset.dx=String(dx);wrapper.dataset.dy=String(dy);
+   wrapper.style.transform='translate('+dx+'px,'+dy+'px)';
+ });
+ function stopDrag(){drag=null;header.style.cursor='grab'}
+ header.addEventListener('pointerup',stopDrag);header.addEventListener('pointercancel',stopDrag);
+});
 function el(tag,css,text){const e=document.createElement(tag);if(css)e.className=css;if(text!==undefined)e.textContent=text;return e}
 function action(text,fn,primary=false){const b=el('button','panel-btn'+(primary?' primary':''),text);b.type='button';b.addEventListener('click',fn);return b}
 function choices(items,selected,onClick){const grid=el('div','choice-grid');items.forEach(([value,title,sub])=>{const b=el('button','choice');b.type='button';b.setAttribute('aria-pressed',String(selected===value));b.append(el('strong','',title),el('small','',sub));b.addEventListener('click',()=>onClick(value));grid.append(b)});return grid}
