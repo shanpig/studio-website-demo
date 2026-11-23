@@ -1,31 +1,35 @@
 <!doctype html>
-<html lang="zh-Hant">
-<head>
+<html lang="zh-Hant"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#080c12">
-<meta name="description" content="有譜智能體 — 用對話釐清你的網站需求。挑選視覺風格、精準整理修改意見，最後帶走可執行的網站需求書。">
-<meta property="og:type" content="website"><meta property="og:title" content="有譜｜你的網站構想，交給我一起整理">
-<meta property="og:description" content="不用學 Prompt 或網頁設計。從想法到風格、修改與需求書，都能跟有譜智能體一起完成。">
-<title>有譜 — 你的網站設計夥伴</title>
+<meta name="theme-color" content="#080d13">
+<meta name="description" content="有譜智能體 — 它親自引導你釐清網站需求、挑選風格、整理設計修改。沒有聊天框的對話式產品體驗。">
+<meta property="og:type" content="website"><meta property="og:title" content="有譜 — 跟智能體一起，把網站想清楚">
+<meta property="og:description" content="中央互動智能體、動態語句與浮動工具。你說想法，有譜協助把它整理成可交付需求。">
+<title>有譜｜直接和智能體對話</title>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./hud.css"><script defer src="./agent.js"></script>
-</head>
-<body>
-<a class="skip" href="#conversation">跳至對話區</a>
+</head><body><a class="skip" href="#composer">跳到和有譜對話的輸入區</a>
 <div class="site">
-  <header class="masthead">
-    <a href="./" class="brand" aria-label="有譜首頁"><span class="brand-symbol" aria-hidden="true">◈</span><span class="brand-words">有譜 <small>YOU / AI STUDIO</small></span></a>
-    <div class="header-actions"><span class="live-indicator"><i></i> 互動展示模式</span><button id="resetBtn" type="button" class="reset-button">重新開始 <span aria-hidden="true">↺</span></button></div>
-  </header>
-  <main class="scene">
-    <section class="hero-stage" aria-label="有譜智能體與浮動工具">
-      <div class="stage-ambient" aria-hidden="true"></div>
-      <div class="intro-copy"><div class="overline"><span class="overline-bar"></span> YOUR CREATIVE INTELLIGENCE</div><h1>你的想法，<br><span>我來理清。</span></h1><p>不用精通 AI、不必懂網頁技術。<br>你只需要告訴我想完成什麼。</p></div>
-      <div class="floating-core" aria-label="有譜智能體本體">
-        <div class="core-field" aria-hidden="true"></div>
-        <svg id="mascot" class="mascot" data-mood="idle" role="img" aria-label="有譜：具備光學核心與金屬羽翼的全息智能體，會隨對話狀態顯示不同光效" viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg">
+<header class="masthead">
+ <a class="brand" href="./" aria-label="有譜首頁"><span class="brand-symbol" aria-hidden="true">◈</span><span class="brand-words">有譜<small>DESIGN INTELLIGENCE</small></span></a>
+ <nav class="journey" aria-label="網站規劃步驟">
+  <button type="button" data-jump="wizard"><em>01</em><span>聊需求</span></button><i></i>
+  <button type="button" data-jump="styles"><em>02</em><span>挑風格</span></button><i></i>
+  <button type="button" data-jump="review"><em>03</em><span>改設計</span></button><i></i>
+  <button type="button" data-jump="brief"><em>04</em><span>拿提案</span></button>
+ </nav>
+ <div class="header-actions"><span class="live-indicator"><i></i> 互動展示</span><button id="historyToggle" type="button" class="header-button" aria-expanded="false" aria-controls="historyPanel">對話紀錄</button><button id="resetBtn" type="button" class="header-button">重新開始 ↺</button></div>
+</header>
+<main class="scene">
+ <section class="hero-stage" aria-label="和中央智能體有譜對話">
+  <div class="stage-ambient" aria-hidden="true"></div>
+  <div class="stage-label label-left" aria-hidden="true"><span>YOU / DESIGN</span><span>HUMAN FIRST · AI ASSISTED</span></div>
+  <div class="stage-label label-right" aria-hidden="true">CONVERSATION / ACTIVE PRESENCE</div>
+  <button type="button" id="coreTrigger" class="floating-core" aria-label="點擊有譜智能體，聽它介紹能幫你完成什麼">
+   <span class="core-field" aria-hidden="true"></span>
+   <svg id="mascot" class="mascot" data-mood="idle" role="img" aria-label="有譜智能體：具備可追蹤注視方向的光學核心、說話時同步呼吸的發光裝置與機械羽翼" viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="irisGlow"><stop offset="0" stop-color="#e9ffff"/><stop offset=".19" stop-color="#a0e4eb"/><stop offset=".5" stop-color="#4f9fb1"/><stop offset=".78" stop-color="#1c485f"/><stop offset="1" stop-color="#0a1c28"/></radialGradient>
             <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7d9ca7"/><stop offset=".2" stop-color="#182734"/><stop offset=".48" stop-color="#344450"/><stop offset=".78" stop-color="#0b1823"/><stop offset="1" stop-color="#6b8791"/></linearGradient>
@@ -67,7 +71,16 @@
             <path d="M186 199L215 187h50l29 12" fill="none" stroke="#d8f8ed" stroke-opacity=".65" stroke-width="1.5"/>
             <path d="M200 227h80" stroke="#2f6570" stroke-opacity=".6" stroke-width="1"/>
           </g>
-          <g class="optic">
+          <g class="speech-effects" aria-hidden="true">
+  <circle class="resonance-ring" cx="240" cy="231" r="58" fill="none" stroke="#c1fcf5" stroke-opacity=".25" stroke-width="1.4"/>
+  <path class="voice-rib r1" d="M192 193q-14 38 0 77" stroke="#bff5ec" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+  <path class="voice-rib r2" d="M178 187q-22 45 0 90" stroke="#a4dbd5" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path class="voice-rib r3" d="M164 192q-20 40 0 81" stroke="#73b9c4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path class="voice-rib r4" d="M288 193q14 38 0 77" stroke="#bff5ec" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+  <path class="voice-rib r5" d="M302 187q22 45 0 90" stroke="#a4dbd5" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path class="voice-rib r6" d="M316 192q20 40 0 81" stroke="#73b9c4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+</g>
+<g class="optic">
             <circle cx="240" cy="231" r="51" fill="#6ecfdc" opacity=".24" filter="url(#softGlow)"/>
             <circle cx="240" cy="231" r="42" fill="#061723" stroke="#a7dce0" stroke-opacity=".5" stroke-width="1.5"/>
             <circle cx="240" cy="231" r="34" fill="url(#irisGlow)"/>
@@ -77,25 +90,30 @@
           </g>
           <g fill="none" stroke="#b6f2f4" stroke-opacity=".45"><path d="M218 292h44 M227 301h26" stroke-width="1.3"/><path d="M212 142l28-11 28 11" stroke-width="1"/></g>
         </svg>
-        <div class="core-caption"><span>YOUPU</span><small>DESIGN INTELLIGENCE · READY</small></div>
-      </div>
-      <div class="system-note">YOU LEAD. INTELLIGENCE FOLLOWS.</div>
-      <div class="status-line"><span class="pulse-dot"></span><span id="modeLabel">就緒，準備幫你整理網站需求</span></div>
-      <div class="floating-layer">
-        <div class="float-position float-wizard"><section class="context-panel hud-panel hidden" data-mode="wizard" aria-label="需求探索視窗"><div class="hud-window-head"><span class="hud-number">01</span><div class="hud-headline"><small>DISCOVERY</small><strong class="hud-title">需求探索</strong></div><button class="hud-close" type="button" aria-label="關閉需求探索視窗">×</button></div><div class="hud-content"></div><div class="panel-footer"><span>YOU / PROJECT SESSION</span><span class="panel-footer-icon">◈</span></div></section></div>
-<div class="float-position float-styles"><section class="context-panel hud-panel hidden" data-mode="styles" aria-label="風格預覽視窗"><div class="hud-window-head"><span class="hud-number">02</span><div class="hud-headline"><small>DESIGN OPTIONS</small><strong class="hud-title">風格預覽</strong></div><button class="hud-close" type="button" aria-label="關閉風格預覽視窗">×</button></div><div class="hud-content"></div><div class="panel-footer"><span>YOU / PROJECT SESSION</span><span class="panel-footer-icon">◈</span></div></section></div>
-<div class="float-position float-review"><section class="context-panel hud-panel hidden" data-mode="review" aria-label="修改整理視窗"><div class="hud-window-head"><span class="hud-number">03</span><div class="hud-headline"><small>REVISION NOTES</small><strong class="hud-title">修改整理</strong></div><button class="hud-close" type="button" aria-label="關閉修改整理視窗">×</button></div><div class="hud-content"></div><div class="panel-footer"><span>YOU / PROJECT SESSION</span><span class="panel-footer-icon">◈</span></div></section></div>
-<div class="float-position float-brief"><section class="context-panel hud-panel hidden" data-mode="brief" aria-label="需求書視窗"><div class="hud-window-head"><span class="hud-number">04</span><div class="hud-headline"><small>YOUR DELIVERABLE</small><strong class="hud-title">需求書</strong></div><button class="hud-close" type="button" aria-label="關閉需求書視窗">×</button></div><div class="hud-content"></div><div class="panel-footer"><span>YOU / PROJECT SESSION</span><span class="panel-footer-icon">◈</span></div></section></div>
-      </div>
-    </section>
-    <section class="conversation" id="conversation" aria-label="與有譜互動">
-      <div class="conv-top"><div class="conv-intro"><span class="conv-icon" aria-hidden="true">◈</span><div><strong>和有譜一起完成你的網站</strong><small>選一個起點，我會在需要時展示工具</small></div></div><div class="journey" aria-label="網站規劃流程"><button type="button" data-jump="wizard">01 <span>釐清需求</span></button><b>—</b><button type="button" data-jump="styles">02 <span>挑選風格</span></button><b>—</b><button type="button" data-jump="review">03 <span>整理修改</span></button><b>—</b><button type="button" data-jump="brief">04 <span>帶走需求書</span></button></div></div>
-      <div id="messages" class="messages" role="log" aria-label="對話記錄" aria-live="polite" aria-relevant="additions"></div>
-      <div class="suggestions" id="suggestions" aria-label="開始操作"></div>
-      <form id="composer" class="composer"><label for="userText" class="visually-hidden">輸入訊息</label><textarea id="userText" rows="1" maxlength="1200" aria-label="輸入訊息" placeholder="直接告訴我你想做什麼網站…" enterkeyhint="send"></textarea><button class="send" type="submit" aria-label="送出訊息"><span aria-hidden="true">↑</span></button></form>
-      <div class="conv-foot">產品體驗 Demo · 規則式對話，未連接即時 AI 或真人客服 · 資料不會上傳</div>
-    </section>
-  </main>
-  <footer class="footer"><span>© 2026 YOU / AI STUDIO · INTERACTIVE PROTOTYPE</span><a href="https://github.com/shanpig/studio-website-demo" target="_blank" rel="noopener noreferrer">GitHub 原始碼 ↗</a></footer>
+   <span class="core-caption"><span>有譜 / YOUPU</span><small id="modeLabel">準備開始</small></span>
+  </button>
+  <div class="presence-wave" id="presenceWave" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <section class="speech-panel" id="speechPanel" aria-label="有譜正在說的話">
+    <span class="speech-label"><span class="speech-dot"></span> YOU / LIVE RESPONSE <span id="speechMode" class="speech-mode">READY</span></span>
+    <div id="userEcho" class="user-echo hidden" aria-label="剛才輸入的內容"></div>
+    <p id="speechText" class="speech-text" aria-hidden="true"></p>
+    <div id="speechAria" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+    <div id="suggestions" class="suggestions" aria-label="有譜建議的下一步"></div>
+  </section>
+  <form id="composer" class="composer" aria-label="給有譜傳送訊息"><label class="visually-hidden" for="userText">告訴有譜你的想法</label><span class="composer-prompt" aria-hidden="true">◈</span><textarea id="userText" rows="1" maxlength="1200" aria-label="告訴有譜你的想法" placeholder="直接告訴有譜你想完成什麼…" enterkeyhint="send"></textarea><button type="submit" class="send" aria-label="送出訊息">↗</button></form>
+  <div class="mode-disclaimer">對話式產品原型 · 規則式引導，未接入即時 AI 模型或真人客服 · 輸入只保留在本頁</div>
+  <div class="floating-layer">
+  <div class="float-position float-wizard"><section class="context-panel hud-panel hidden" data-mode="wizard" aria-label="聊需求浮動視窗"><div class="hud-window-head"><span class="hud-number">01</span><div class="hud-headline"><small>DISCOVERY</small><strong class="hud-title">聊需求</strong></div><button type="button" class="hud-close" aria-label="關閉聊需求視窗">×</button></div><div class="hud-content"></div><div class="panel-footer"><span>YOU / PROJECT SESSION</span><span aria-hidden="true">◈</span></div></section></div>
+<div class="float-position float-styles"><section class="context-panel hud-panel hidden" data-mode="styles" aria-label="挑風格浮動視窗"><div class="hud-window-head"><span class="hud-number">02</span><div class="hud-headline"><small>DESIGN EXPLORER</small><strong class="hud-title">挑風格</strong></div><button type="button" class="hud-close" aria-label="關閉挑風格視窗">×</button></div><div class="hud-content"></div><div class="panel-footer"><span>YOU / PROJECT SESSION</span><span aria-hidden="true">◈</span></div></section></div>
+<div class="float-position float-review"><section class="context-panel hud-panel hidden" data-mode="review" aria-label="改設計浮動視窗"><div class="hud-window-head"><span class="hud-number">03</span><div class="hud-headline"><small>REVISION NOTES</small><strong class="hud-title">改設計</strong></div><button type="button" class="hud-close" aria-label="關閉改設計視窗">×</button></div><div class="hud-content"></div><div class="panel-footer"><span>YOU / PROJECT SESSION</span><span aria-hidden="true">◈</span></div></section></div>
+<div class="float-position float-brief"><section class="context-panel hud-panel hidden" data-mode="brief" aria-label="拿提案浮動視窗"><div class="hud-window-head"><span class="hud-number">04</span><div class="hud-headline"><small>PROJECT BRIEF</small><strong class="hud-title">拿提案</strong></div><button type="button" class="hud-close" aria-label="關閉拿提案視窗">×</button></div><div class="hud-content"></div><div class="panel-footer"><span>YOU / PROJECT SESSION</span><span aria-hidden="true">◈</span></div></section></div>
+  </div>
+  <aside class="history-panel hidden" id="historyPanel" aria-label="對話紀錄">
+    <div class="history-head"><div><small>SESSION TRANSCRIPT</small><strong>完整對話紀錄</strong></div><button type="button" id="historyClose" aria-label="關閉對話紀錄">×</button></div>
+    <div class="messages" id="messages" role="log" aria-label="對話紀錄" aria-live="off"></div>
+    <p>只有本頁瀏覽期間可見；重新整理不保存對話。</p>
+  </aside>
+ </section>
+</main>
 </div>
 </body></html>

@@ -12,14 +12,44 @@ const styleCatalog={quiet:{title:'寧靜留白',desc:'高質感、影像與大�
 const industryLabels={design:'設計／創意工作室',business:'企業／顧問服務',wellness:'教練／生活服務',tech:'科技／軟體服務'};
 const labelFor=(key,value)=>q.find(item=>item.key===key)?.options.find(item=>item[0]===value)?.[1]||'尚未選擇';
 const msgs=$('messages'),suggestions=$('suggestions'),mascot=$('mascot');
+const speech=$('speechText'),speechPanel=$('speechPanel'),speechAria=$('speechAria');
+const speechMode=$('speechMode'),userEcho=$('userEcho');
+const hero=document.querySelector('.hero-stage');
 let panel=null,context=null,topLayer=20;
 let recentPanels=[];
-const hero=document.querySelector('.hero-stage');
+
 const floatingPanels=Object.fromEntries([...document.querySelectorAll('.hud-panel')].map(e=>[e.dataset.mode,e]));
-function mood(type){mascot.dataset.mood=type;clearTimeout(mood.timeout);mood.timeout=setTimeout(()=>mascot.dataset.mood='idle',1100)}
-function addMessage(who,text){const wrap=document.createElement('div');wrap.className='msg '+who;
+let frame=0,speechSequence=0,moodTimer=0;
+const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+function mood(type,ms=1100){mascot.dataset.mood=type;clearTimeout(moodTimer);if(ms)moodTimer=setTimeout(()=>mascot.dataset.mood='idle',ms)}
+function finishSpeaking(){hero.classList.remove('is-speaking');speechPanel.classList.remove('is-typing');speechMode.textContent='READY';mascot.dataset.mood='idle'}
+function presentSpeech(text){
+ const mySequence=++speechSequence;cancelAnimationFrame(frame);
+ const full=String(text).replace(/\n{3,}/g,'\n\n').trim();
+ speechAria.textContent=full;
+ speech.textContent='';
+ if(reduceMotion.matches){speech.textContent=full;finishSpeaking();return}
+ hero.classList.add('is-speaking');speechPanel.classList.add('is-typing');speechMode.textContent='SPEAKING';mood('speaking',0);
+ const characters=Array.from(full),duration=Math.min(3200,Math.max(650,characters.length*24));let started=null;
+ const render=now=>{
+   if(mySequence!==speechSequence)return;
+   if(started===null)started=now;
+   const progress=Math.min(1,(now-started)/duration);
+   const count=Math.min(characters.length,Math.ceil(progress*characters.length));
+   speech.textContent=characters.slice(0,count).join('');
+   if(progress<1)frame=requestAnimationFrame(render);
+   else{speech.textContent=full;finishSpeaking();mood('happy',850)}
+ };
+ frame=requestAnimationFrame(render);
+}
+function addMessage(who,text){
+ const wrap=document.createElement('div');wrap.className='msg '+who;
  if(who==='assistant'){const ava=document.createElement('div');ava.className='avatar';ava.textContent='◈';ava.setAttribute('aria-hidden','true');wrap.append(ava)}
- const bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=text;wrap.append(bubble);msgs.append(wrap);msgs.scrollTop=msgs.scrollHeight;mood(who==='assistant'?'speaking':'thinking');return wrap}
+ const bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=text;wrap.append(bubble);msgs.append(wrap);msgs.scrollTop=msgs.scrollHeight;
+ if(who==='assistant')presentSpeech(text);
+ else{userEcho.textContent='你：'+String(text).slice(0,85)+(String(text).length>85?'…':'');userEcho.classList.remove('hidden');mood('thinking',750)}
+ return wrap
+}
 function quick(items){suggestions.replaceChildren();items.forEach(({text,fn})=>{const b=document.createElement('button');b.type='button';b.textContent=text;b.addEventListener('click',fn);suggestions.append(b)})}
 function setMode(mode){state.mode=mode;const labels={home:'就緒 · 準備開始網站規劃',wizard:'步驟 1 / 正在理解你的需求',styles:'步驟 2 / 正在挑選喜歡的風格',review:'步驟 3 / 正在整理修改方向',brief:'步驟 4 / 需求書已整理完成'};
  $('modeLabel').textContent=labels[mode]||labels.home;
@@ -131,9 +161,34 @@ function parseText(value){const msg=value.trim();if(!msg)return;addMessage('user
  if(/真人|客服|人工|聯絡|顧問/.test(s)){addMessage('assistant','正式服務會把真人審核、回覆時間、修改輪次與資安責任寫清楚。不過這個 Demo 尚未連接真人客服或建立商業收件管道，我不能冒充有人正在接洽。你可以先完成需求書，之後作為實際合作的起點。');homeQuick();return}
  if(/網站|官網|工作室|電商|landing|品牌|公司|創業/.test(s)){state.notes.push(msg);addMessage('assistant','我先記下你的背景：「'+msg.slice(0,80)+(msg.length>80?'…':'')+'」。為了避免猜錯，我會再問幾個真正影響網站效果的問題。');state.step=0;beginWizard(false);return}
  state.notes.push(msg);addMessage('assistant','我已把這段話保留在你的需求摘要，但目前還不能可靠判斷你的意思。你可以選一個方向，我再一步步幫你釐清：');homeQuick()}
-function reset(){state.mode='home';state.step=0;state.answers={};state.style='quiet';state.brand='';state.headline='';state.feedback=[];state.notes=[];state.selected='';msgs.replaceChildren();closePanel();document.querySelectorAll('.float-position').forEach(w=>{w.style.removeProperty('--drag-x');w.style.removeProperty('--drag-y');w.style.zIndex='';delete w.dataset.dx;delete w.dataset.dy});topLayer=20;setMode('home');intro()}
-function intro(){addMessage('assistant','嗨，我是有譜。你不需要懂 AI 或網站技術。\n我會帶你釐清需求、挑選風格、整理修改，最後產生可用的需求書。從哪裡開始？');homeQuick()}
+function reset(){state.mode='home';state.step=0;state.answers={};state.style='quiet';state.brand='';state.headline='';state.feedback=[];state.notes=[];state.selected='';msgs.replaceChildren();speechSequence++;cancelAnimationFrame(frame);finishSpeaking();userEcho.classList.add('hidden');userEcho.textContent='';toggleHistory(false);closePanel();document.querySelectorAll('.float-position').forEach(w=>{w.style.removeProperty('--drag-x');w.style.removeProperty('--drag-y');w.style.zIndex='';delete w.dataset.dx;delete w.dataset.dy});topLayer=20;setMode('home');intro()}
+function intro(){addMessage('assistant','嗨，我是有譜。你想做什麼網站？\n我陪你挑風格、改設計，再整理成需求書。');homeQuick()}
 document.querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',()=>({wizard:beginWizard,styles:beginStyles,review:beginReview,brief:beginBrief})[b.dataset.jump]()));
+// The mascot is the primary point of interaction, rather than a decorative avatar beside a chat log.
+$('coreTrigger').addEventListener('click',()=>{
+ addMessage('assistant','我在這裡。從「規劃網站」開始，我會幫你釐清需求、看風格、整理修改，最後給你一份可帶走的需求書。');
+ homeQuick();
+});
+// Cursor-aware optical gaze — tiny, clamped movement to avoid distracting animation.
+let gazeFrame=0;const stage=document.querySelector('.hero-stage');
+stage.addEventListener('pointermove',event=>{
+ if(reduceMotion.matches||event.pointerType==='touch')return;
+ cancelAnimationFrame(gazeFrame);
+ const rect=stage.getBoundingClientRect();const relX=(event.clientX-rect.left)/rect.width-.5;
+ const relY=(event.clientY-rect.top)/rect.height-.44;
+ gazeFrame=requestAnimationFrame(()=>{
+   mascot.style.setProperty('--gaze-x',(Math.max(-1,Math.min(1,relX*2))*4.5).toFixed(1)+'px');
+   mascot.style.setProperty('--gaze-y',(Math.max(-1,Math.min(1,relY*2))*3.5).toFixed(1)+'px');
+   mascot.style.setProperty('--tilt',(Math.max(-1,Math.min(1,relX*2))*1.4).toFixed(2)+'deg');
+ });
+},{passive:true});
+stage.addEventListener('pointerleave',()=>{mascot.style.removeProperty('--gaze-x');mascot.style.removeProperty('--gaze-y');mascot.style.removeProperty('--tilt')});
+// Optional transcript drawer, hidden by default.
+function toggleHistory(show){$('historyPanel').classList.toggle('hidden',!show);$('historyToggle').setAttribute('aria-expanded',String(show));if(show)$('historyClose').focus()}
+$('historyToggle').addEventListener('click',()=>toggleHistory($('historyPanel').classList.contains('hidden')));
+$('historyClose').addEventListener('click',()=>{toggleHistory(false);$('historyToggle').focus()});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('historyPanel').classList.contains('hidden'))toggleHistory(false)});
+
 $('resetBtn').addEventListener('click',reset);
 $('composer').addEventListener('submit',e=>{e.preventDefault();parseText($('userText').value)});
 $('userText').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();parseText($('userText').value)}});
