@@ -132,7 +132,7 @@ function parseText(value){const msg=value.trim();if(!msg)return;addMessage('user
  if(/網站|官網|工作室|電商|landing|品牌|公司|創業/.test(s)){state.notes.push(msg);addMessage('assistant','我先記下你的背景：「'+msg.slice(0,80)+(msg.length>80?'…':'')+'」。為了避免猜錯，我會再問幾個真正影響網站效果的問題。');state.step=0;beginWizard(false);return}
  state.notes.push(msg);addMessage('assistant','我已把這段話保留在你的需求摘要，但目前還不能可靠判斷你的意思。你可以選一個方向，我再一步步幫你釐清：');homeQuick()}
 function reset(){state.mode='home';state.step=0;state.answers={};state.style='quiet';state.brand='';state.headline='';state.feedback=[];state.notes=[];state.selected='';msgs.replaceChildren();closePanel();document.querySelectorAll('.float-position').forEach(w=>{w.style.removeProperty('--drag-x');w.style.removeProperty('--drag-y');w.style.zIndex='';delete w.dataset.dx;delete w.dataset.dy});topLayer=20;setMode('home');intro()}
-function intro(){addMessage('assistant','你好，我是有譜。\n想做網站，不需要先懂 AI 或設計。\n\n我會幫你完成四步：① 釐清需求 → ② 選擇風格 → ③ 整理修改 → ④ 下載需求書。\n\n你想從哪裡開始？');homeQuick()}
+function intro(){addMessage('assistant','嗨，我是有譜。你不需要懂 AI 或網站技術。\n我會帶你釐清需求、挑選風格、整理修改，最後產生可用的需求書。從哪裡開始？');homeQuick()}
 document.querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',()=>({wizard:beginWizard,styles:beginStyles,review:beginReview,brief:beginBrief})[b.dataset.jump]()));
 $('resetBtn').addEventListener('click',reset);
 $('composer').addEventListener('submit',e=>{e.preventDefault();parseText($('userText').value)});
