@@ -3,9 +3,9 @@ window.SPACE_CASES = {
   taichung: {
     slug:"taichung", index:"01", title:"臺中國家歌劇院", english:"NATIONAL TAICHUNG THEATER", location:"臺中・西屯", type:"表演場館", year:"2016", architect:"Toyo Ito & Associates", overview:"讓牆壁不再只是分隔，而成為聲音、光線與人流彼此交會的地形。", image:"https://upload.wikimedia.org/wikipedia/commons/a/ac/National_Taichung_Theater_Level_1_lobby_2019.jpg",
     alt:"臺中國家歌劇院一樓大廳的連續曲面牆與開放通道", credit:"Wpcpey / Wikimedia Commons", license:"CC BY 4.0", licenseUrl:"https://creativecommons.org/licenses/by/4.0/", imagePage:"https://commons.wikimedia.org/wiki/File:National_Taichung_Theater_Level_1_lobby_2019.jpg",
-    labels:["曲面結構","公共動線","光與聲音"], facts:[["設計者","伊東豊雄 Toyo Ito"],["啟用","2016 年"],["地點","臺中市西屯區"],["特色","58 組曲牆／29 座音涵"]],
+    labels:["曲面結構","公共動線","光與聲音"], facts:[["設計者","伊東豊雄 Toyo Ito"],["啟用","2016 年"],["地點","臺中市西屯區"],["特色","58 面曲牆／29 個洞窟"]],
     intro:"臺中國家歌劇院的魅力並不只在外觀。進入大廳，牆面、天花與通道彷彿延續成同一種語言。伊東豊雄以「可以聆聽的建築」為構想，讓原本隔開人的牆，變成引導探索的空間。",
-    sections:[["設計提問","如果牆壁不以直角相接，人在建築裡如何找到方向？這個案例讓動線透過開口、曲線與視野自然形成，不必處處依靠標誌。"],["關鍵觀察","官方設計介紹記錄 58 組曲牆與 29 座音涵。曲面形成不同尺度的公共空間，巨大玻璃幕牆又讓戶外光線進入；大廳的視覺連續性是這座建築的重要經驗。"],["可以帶走的設計思考","形式不是目的。當曲線、採光與行走路徑有一致的概念，建築便有自己的辨識度。這個觀察同樣適用於品牌網站：讓敘事、導覽和視覺語言互相呼應，而不是孤立的漂亮區塊。"]],
+    sections:[["設計提問","如果牆壁不以直角相接，人在建築裡如何找到方向？這個案例讓動線透過開口、曲線與視野自然形成，不必處處依靠標誌。"],["關鍵觀察","官方設計介紹記錄 58 面曲牆與 29 個洞窟。曲面形成不同尺度的公共空間，巨大玻璃幕牆又讓戶外光線進入；大廳的視覺連續性是這座建築的重要經驗。"],["可以帶走的設計思考","形式不是目的。當曲線、採光與行走路徑有一致的概念，建築便有自己的辨識度。這個觀察同樣適用於品牌網站：讓敘事、導覽和視覺語言互相呼應，而不是孤立的漂亮區塊。"]],
     sources:[["臺中國家歌劇院｜建築設計官方介紹","https://www.npac-ntt.org/about/architecture/design"],["Arup｜The National Taichung Theater","https://www.arup.com/en-us/projects/the-national-taichung-theater/"]]
   },
   taipei: {
