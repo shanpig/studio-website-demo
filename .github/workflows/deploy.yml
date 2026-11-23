@@ -10,8 +10,8 @@ permissions:
   pages: write
   id-token: write
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: website-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   validate:
     runs-on: ubuntu-24.04
