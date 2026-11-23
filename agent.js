@@ -14,7 +14,7 @@ const labelFor=(key,value)=>q.find(item=>item.key===key)?.options.find(item=>ite
 const msgs=$('messages'),suggestions=$('suggestions'),mascot=$('mascot');
 const speech=$('speechText'),speechPanel=$('speechPanel'),speechAria=$('speechAria');
 const speechMode=$('speechMode'),userEcho=$('userEcho');
-const hero=$('.hero-stage')||document.querySelector('.hero-stage');
+const hero=document.querySelector('.hero-stage');
 let panel=null,context=null,topLayer=20;
 let recentPanels=[];
 
@@ -25,7 +25,7 @@ function mood(type,ms=1100){mascot.dataset.mood=type;clearTimeout(moodTimer);if(
 function finishSpeaking(){hero.classList.remove('is-speaking');speechPanel.classList.remove('is-typing');speechMode.textContent='READY';mascot.dataset.mood='idle'}
 function presentSpeech(text){
  const mySequence=++speechSequence;cancelAnimationFrame(frame);
- const full=String(text).replace(/\\n\\n+/g,'\\n').trim();
+ const full=String(text).replace(/\n{3,}/g,'\n\n').trim();
  speechAria.textContent=full;
  speech.textContent='';
  if(reduceMotion.matches){speech.textContent=full;finishSpeaking();return}
