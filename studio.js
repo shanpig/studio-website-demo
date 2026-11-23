@@ -2,7 +2,7 @@
 const $=id=>document.getElementById(id);
 const styles={quiet:{name:'留白敘事',desc:'讓人感受細節與質感',brand:'留白設計',title:'讓空間回到生活。'},bold:{name:'強烈識別',desc:'讓品牌一眼就被記住',brand:'無界創意',title:'讓想法，成為下一個標準。'},warm:{name:'親切溫暖',desc:'讓客戶願意先靠近一步',brand:'好日工作室',title:'每一次相遇，都從理解開始。'},clean:{name:'專業效率',desc:'讓複雜服務變得清楚可信',brand:'嶼信顧問',title:'把複雜的挑戰，化成清楚的下一步。'}};
 const sectors={studio:{name:'設計工作室',line:'我們用設計梳理品牌的故事，陪你找到真正適合的方向。',tag:'STUDIO / CREATIVE PRACTICE'},consulting:{name:'B2B 顧問服務',line:'從第一個問題到落地執行，為企業建立值得信任的合作方法。',tag:'ADVISORY / BUSINESS SOLUTIONS'},wellness:{name:'教練與生活服務',line:'從每個人的真實需求出發，讓改變變得自在且可持續。',tag:'WELLNESS / PERSONAL SERVICE'},tech:{name:'科技服務',line:'把專業能力轉成可衡量的成果，從可靠的技術開始。',tag:'TECHNOLOGY / DIGITAL SERVICE'}};
-const state={style:'quiet',sector:'studio',device:'desktop',step:0,answers:{industry:'',goal:'',audience:'',feature:'',assets:''},note:''};
+const state={style:'quiet',sector:'studio',device:'desktop',step:0,answers:{industry:'',goal:'',audience:'',feature:'',assets:''},note:'',reviews:[]};
 const nav=$('navToggle'),links=$('navlinks');nav.addEventListener('click',()=>{const open=links.classList.toggle('open');nav.setAttribute('aria-expanded',String(open));nav.setAttribute('aria-label',open?'關閉選單':'開啟選單');nav.textContent=open?'×':'☰'});links.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{links.classList.remove('open');nav.setAttribute('aria-expanded','false');nav.textContent='☰'}));
 function renderStage(){const s=styles[state.style],sector=sectors[state.sector];$('stageScreen').dataset.style=state.style;$('stageScreen').classList.toggle('phone',state.device==='phone');$('mockBrand').textContent=$('demoBrand').value||s.brand;$('mockHeadline').textContent=$('demoHeadline').value||s.title;$('mockCTA').textContent=$('demoCTA').value+' ↗';$('mockDesc').textContent=sector.line;$('mockEyebrow').textContent=sector.tag;$('stageTag').textContent=s.name+' / '+sector.name}
 function setStyle(key,sync=true){if(!styles[key])return;state.style=key;document.querySelectorAll('.sample').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.style===key)));$('demoBrand').value=styles[key].brand;$('demoHeadline').value=styles[key].title;renderStage();if(sync&&state.step===4)renderWizard()}
@@ -32,10 +32,33 @@ const tag=el('div','eyebrow muted','STEP '+(state.step+1)+' / BUSINESS FIRST');c
 q.options.forEach(([value,title,desc])=>{const b=el('button','opt');b.type='button';b.setAttribute('aria-pressed',String(value===answer));b.append(el('strong','',title),el('small','',desc));b.addEventListener('click',()=>{state.answers[q.key]=value;group.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true')});group.append(b)});
 const bottom=el('div','wizard-bottom');const back=el('button','ghost-text','← 上一題');back.type='button';back.disabled=state.step===0;back.style.opacity=state.step===0?'.35':'1';back.addEventListener('click',()=>{state.step--;renderWizard()});const next=el('button','btn',state.step===4?'查看我的需求摘要 ↗':'下一題 →');next.type='button';next.addEventListener('click',()=>{if(!state.answers[q.key])state.answers[q.key]=defaults[q.key];state.step++;renderWizard()});bottom.append(back,next);panel.append(tag,h,p,group,bottom)}
 function createBrief(){const answers=state.answers;const current=key=>{if(!answers[key])answers[key]=defaults[key];return labels(key)};const expected={inquiry:['需確認表單目的、收件通知信箱、隱私告知與防垃圾訊息。','驗收：送出測試資料後收件方收到通知；無效資料可被正確阻擋。'],booking:['需確認第三方預約服務、時區、取消規則與通知流程。','驗收：同時段不重複預約；客戶收到確認資訊。'],content:['需確認哪些人可以編輯、圖片上傳與帳號權限。','驗收：非技術人員可以更新指定欄位並在網站顯示。'],showcase:['需確認案例數量、分類與素材授權。','驗收：案例分類正確、手機可檢視且每張照片有授權來源。']}[answers.feature||defaults.feature];
-return ['有譜 STUDIO｜網站需求簡報','產生日期：'+new Date().toLocaleDateString('zh-TW'),'','01｜你的事業',current('industry'),'02｜網站首要商業目標',current('goal'),'03｜客戶最在意的疑慮',current('audience'),'04｜第一版優先功能',current('feature'),'05｜素材準備程度',current('assets'),'06｜偏好設計風格',styles[state.style].name+' — '+styles[state.style].desc,'07｜視覺樣本調整','品牌名稱：'+($('demoBrand').value.trim()||'待提供'),'首頁標題：'+($('demoHeadline').value.trim()||'待討論'),'希望訪客採取的行動：'+$('demoCTA').value,'','08｜對交付方的功能驗收要求',...expected,'','09｜內容與品質待確認事項','・實際品牌與作品的合法授權','・響應式、鍵盤使用與 WCAG 2.2 目標','・網站速度、基本 SEO 與瀏覽器測試','・正式收件時的個資告知、保存期限與刪除權責','・主機、網域、原始碼和管理帳號歸屬','・修改次數、工期、保固及後續維護費用','','10｜你的其他想法',state.note||'尚未填寫','', '【說明】這份文件由公開展示工具在瀏覽器內產生；目前沒有被任何公司正式受理，也不是合約或最終報價。'].join('\n')}
+return ['有譜 STUDIO｜網站需求簡報','產生日期：'+new Date().toLocaleDateString('zh-TW'),'','01｜你的事業',current('industry'),'02｜網站首要商業目標',current('goal'),'03｜客戶最在意的疑慮',current('audience'),'04｜第一版優先功能',current('feature'),'05｜素材準備程度',current('assets'),'06｜偏好設計風格',styles[state.style].name+' — '+styles[state.style].desc,'07｜視覺樣本調整','品牌名稱：'+($('demoBrand').value.trim()||'待提供'),'首頁標題：'+($('demoHeadline').value.trim()||'待討論'),'希望訪客採取的行動：'+$('demoCTA').value,'','08｜對交付方的功能驗收要求',...expected,'','09｜內容與品質待確認事項','・實際品牌與作品的合法授權','・響應式、鍵盤使用與 WCAG 2.2 目標','・網站速度、基本 SEO 與瀏覽器測試','・正式收件時的個資告知、保存期限與刪除權責','・主機、網域、原始碼和管理帳號歸屬','・修改次數、工期、保固及後續維護費用','','10｜你的其他想法',state.note||'尚未填寫','','11｜已整理修改意見',...(state.reviews.length?state.reviews.map((r,i)=>'修改 '+(i+1)+'：'+r.area+'｜'+r.direction+'｜'+r.priority+'｜'+(r.note||'無補充')):['尚未新增修改意見']), '【說明】這份文件由公開展示工具在瀏覽器內產生；目前沒有被任何公司正式受理，也不是合約或最終報價。'].join('\n')}
 function renderResult(panel){const out=el('div','wizard-output');out.append(el('div','eyebrow muted','PERSONALIZED PROJECT BRIEF'),el('h3','','你的第一份網站需求摘要已經準備好。'),el('p','muted','不是技術規格的堆疊，而是以商業目標為主的規劃起點。'));const box=el('div','brief-box');const dl=el('dl');[['事業類型',labels('industry')],['主要目標',labels('goal')],['關鍵疑慮',labels('audience')],['優先功能',labels('feature')],['素材狀態',labels('assets')],['喜歡的風格',styles[state.style].name]].forEach(([k,v])=>dl.append(el('dt','',k),el('dd','',v)));box.append(dl);out.append(box);
 const lab=el('label','', '有其他想補充的地方嗎？');lab.htmlFor='extraNote';lab.style.cssText='display:block;font-size:12px;font-weight:700;margin:0 0 8px';const input=el('textarea');input.id='extraNote';input.placeholder='例如：目前已有舊網站、需要中英雙語、想知道維護費用……';input.value=state.note;input.addEventListener('input',()=>state.note=input.value);out.append(lab,input);
 const buttons=el('div','wizard-bottom');const back=el('button','ghost-text','← 返回修改');back.type='button';back.onclick=()=>{state.step=4;renderWizard()};const dlBtn=el('button','btn','下載完整需求書 ↓');dlBtn.type='button';dlBtn.addEventListener('click',()=>{const file=new Blob(['\ufeff'+createBrief()],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(file),a=el('a');a.href=url;a.download='有譜-網站需求簡報.txt';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);toast('需求書已下載。資料未送出，也沒有人會收到這份文件。')});buttons.append(back,dlBtn);out.append(buttons,el('p','fineprint','此 Demo 不會上傳資料、建立訂單或通知真人服務人員；要啟用正式接案，需先完成商業帳號、收件流程與人工服務安排。'));panel.append(out)}
 function toast(text){const t=$('toast');t.textContent=text;t.classList.remove('hidden');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.add('hidden'),5200)}
+
+function renderReviews(){
+ const list=$('reviewItems');list.replaceChildren();$('reviewCount').textContent=String(state.reviews.length);
+ if(!state.reviews.length){list.append(el('p','muted','尚未新增修改意見。請選擇調整部位、方向與優先度。'));return}
+ state.reviews.forEach((r,i)=>{
+ const item=el('article','review-item'),top=el('div','review-item-top'),info=el('div');
+ info.append(el('strong','',String(i+1).padStart(2,'0')+' · '+r.area),el('small','',r.direction+'　／　'+r.priority));
+ const remove=el('button','remove-review','移除');remove.type='button';remove.setAttribute('aria-label','移除第'+(i+1)+'條修改意見');remove.onclick=()=>{state.reviews.splice(i,1);renderReviews()};
+ top.append(info,remove);item.append(top);if(r.note)item.append(el('p','',r.note));list.append(item)
+ })
+}
+$('reviewForm').addEventListener('submit',event=>{
+ event.preventDefault();state.reviews.push({area:$('reviewArea').value,direction:$('reviewDirection').value,priority:$('reviewPriority').value,note:$('reviewNote').value.trim()});
+ $('reviewNote').value='';renderReviews();toast('修改意見已加入清單。')
+});
+$('downloadReviews').addEventListener('click',()=>{
+ if(!state.reviews.length){toast('請先新增一條修改意見。');return}
+ const lines=['有譜 Studio｜修改需求清單','風格：'+styles[state.style].name,'',...state.reviews.flatMap((r,i)=>['第 '+(i+1)+' 條：'+r.area,'目標：'+r.direction,'優先度：'+r.priority,'補充：'+(r.note||'無'),'']),'此文件僅在你的裝置生成，未送出給任何設計師。'];
+ const blob=new Blob([String.fromCharCode(65279)+lines.join(String.fromCharCode(13,10))],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=el('a');
+ a.href=url;a.download='有譜-修改清單.txt';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);toast('修改清單已下載。')
+});
+renderReviews();
+
 renderWizard();
 })();
