@@ -60,3 +60,7 @@
   .hud-content{max-height:none!important;overflow:visible!important;flex:0 0 auto!important}
   .hud-content .brief-preview{max-height:none!important}
 }
+
+/* Fully hide the keyboard skip link until focused, including full-page mobile screenshots. */
+.skip:not(:focus){width:1px;height:1px;overflow:hidden;clip-path:inset(100%);pointer-events:none}
+.skip:focus{clip-path:none;width:auto;height:auto}
