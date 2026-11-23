@@ -1,54 +1,30 @@
-# 有譜智能體 — Conversational Website Studio
+# 有譜 AI — Holographic Design Intelligence (v6)
 
-公開 Demo（需 GitHub Pages 完成自動部署）：https://shanpig.github.io/studio-website-demo/
+**Site**: https://shanpig.github.io/studio-website-demo/
 
-## 產品概念
+## Version control workflow
 
-以科幻電影的懸浮智能體作為網站主要互動方式。平常僅呈現 mascot 與文字對話；只有需要明確決策或可視化時，才喚出對應的互動元件。
+- `main`: public GitHub Pages production demo (automatically deploys after validation).
+- `feature/holographic-agent-hud-v6`: centered sci-fi holographic HUD redesign. Design and implementation are kept in an independent development branch.
+- New visual/interaction experiments should go through a dedicated `feature/*` branch and pull request; merge after checks. The feature branch is retained for easy comparison with earlier versions via Git history.
 
-這是**可操作的對話式產品原型**，目前尚未連接真正的語言模型、商業 CRM、正式付款、表單後端或真人客服。對話流程使用規則式意圖判斷與固定的商業問題，不會假裝已經能自由理解各種問題。
+## v6 experience
 
-## 可以直接操作
+- A **holographic mascot stays at screen center** with animated rings, pulsing energy-core, sci-fi scan grid and system labels.
+- The **chat stays in a bottom communication dock**, avoiding a conventional split landing-page layout.
+- **Four independent floating windows** appear only when needed: business discovery (left/top), style selector (right/top), revision log (left/bottom), and downloadable client brief (right/bottom).
+- Desktop panels can be **dragged and layered**; users can keep several panels open in parallel. On mobile they become vertically stacked, scrollable panels.
+- The previous structured workflow is retained: five business questions, four style examples, client review items, downloadable UTF-8 project requirements, and a local-only demo conversation.
+- The system has no live LLM, server storage, payment, CRM, or staffed human support. It is a rule-driven and locally executed interactive prototype.
 
-1. **開始對話**：輸入「我想做網站」、按「幫我規劃網站」，或使用建議操作。
-2. **精準釐清需求**：五題結構化問題，從產業、商業目標、信任阻力、功能優先度到內容素材，逐題引導。
-3. **選擇視覺方向**：四種風格（寧靜留白、未來鋒芒、溫暖日常、清晰專業），提供可切換的首頁示範。
-4. **直接修改內容**：風格選擇器支援品牌名稱與首頁主標題編輯。
-5. **提出修改意見**：精確選擇需要調整的部位、期待效果及優先程度，並可追加、移除意見。
-6. **匯出需求書**：將結構化問答、風格、修改內容及正式交付需要核對的安全與資料事項，下載成文字檔。
-7. **重新開始**：清除這個頁面內的所有對話及選項。
+## Quality gates
 
-## 主要交付檔案
+Run `node tests/smoke.cjs`. The GitHub Actions workflow checks the PR on branch changes; only `main` triggers Pages publishing. Static checks cover JavaScript syntax and referenced IDs, responsive layout hooks, motion reduction, all four HUD windows and local-only handling. **They are not a completed browser, accessibility or security audit.**
 
-- `index.html` — 單頁對話體驗、動畫 SVG mascot、對話記錄、動態工具容器。
-- `agent.css` — 深色科幻視覺系統、動畫、響應式手機版、keyboard focus、reduce motion。
-- `agent.js` — 規則式聊天、問答、風格比較、修改意見、需求書下載。
-- `favicon.svg`, `icon.svg` — 對應智能體的品牌圖示。
-- `tests/smoke.cjs` — 部署前靜態測試，檢查資產、JS 語法、必要功能與資料隱私邊界。
-- `.github/workflows/deploy.yml` — GitHub Actions 測試與 Pages 自動部署。
+## Why this interface
 
-前幾版的 `studio.js`, `studio.css`, `app.js`, `data.js` 是歷史原型，目前主頁不載入。
+The sales thesis remains: **AI can generate a website, but clients should not have to learn prompting, interface design, security, data management or iteration logistics.** Each floating panel appears at the moment of a decision, reducing cognitive load instead of showing a long generic website.
 
-## 隱私、安全與真實服務狀態
+## Production boundaries
 
-- 本版只在瀏覽器本地記錄互動中的資料，沒有使用 `fetch` 或任何 API 發送使用者輸入；重新整理頁面後內容不會保存。
-- 外部 Google Fonts 和示意 Unsplash 圖像是純資產請求，並非對話或表單提交。正式使用前仍須檢查第三方資源與圖片授權、隱私揭露。
-- 本版不能進行真人服務；所有人員審核、回覆時效、維運、資訊安全等是正式服務**尚待落實的工作**，不是已經開始執行的承諾。
-- 沒有產生真實價格、客戶資訊、付費訂單或以虛構資料假冒客戶見證。
-- Mascot 是用 SVG/CSS 實作，可隨回話改變動畫狀態。它不是已接入的真正自主 AI。
-
-## 驗證與部署
-
-```bash
-node tests/smoke.cjs
-```
-
-GitHub Actions 會先驗證，再使用 Pages 發佈。需在 GitHub repository `Settings > Pages > Build and deployment > Source` 選擇 **GitHub Actions**。
-
-**仍需驗證**：瀏覽器實際互動、行動裝置、效能測試、無障礙稽核、部署成功狀態與正式商業服務流程。
-
-## 後續開發
-
-- 對話理解：改為可控的 LLM + 明確的工具調用，不讓模型任意存取客戶資料或自行宣稱執行了任務。
-- 真正的風格案例庫、產業分眾、人工專家審核、修改版本差異及可驗收頁面。
-- 正式接案：身分授權確認後，再配置安全的後端、個資流程、CRM、通知、支付與人員排班。
+Customer material, actual payment, mail delivery, real data storage, permissions, design reviews and response-time promises must be implemented before offering this as a paid service. The demo does not impersonate real human staff and doesn't describe invented customer case studies as delivered work.
