@@ -13,26 +13,40 @@ const industryLabels={design:'設計／創意工作室',business:'企業／顧�
 const labelFor=(key,value)=>q.find(item=>item.key===key)?.options.find(item=>item[0]===value)?.[1]||'尚未選擇';
 const msgs=$('messages'),suggestions=$('suggestions'),mascot=$('mascot');
 let panel=null,context=null,topLayer=20;
+let recentPanels=[];
+const hero=document.querySelector('.hero-stage');
 const floatingPanels=Object.fromEntries([...document.querySelectorAll('.hud-panel')].map(e=>[e.dataset.mode,e]));
 function mood(type){mascot.dataset.mood=type;clearTimeout(mood.timeout);mood.timeout=setTimeout(()=>mascot.dataset.mood='idle',1100)}
 function addMessage(who,text){const wrap=document.createElement('div');wrap.className='msg '+who;
  if(who==='assistant'){const ava=document.createElement('div');ava.className='avatar';ava.textContent='◈';ava.setAttribute('aria-hidden','true');wrap.append(ava)}
  const bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=text;wrap.append(bubble);msgs.append(wrap);msgs.scrollTop=msgs.scrollHeight;mood(who==='assistant'?'speaking':'thinking');return wrap}
 function quick(items){suggestions.replaceChildren();items.forEach(({text,fn})=>{const b=document.createElement('button');b.type='button';b.textContent=text;b.addEventListener('click',fn);suggestions.append(b)})}
-function setMode(mode){state.mode=mode;const labels={home:'就緒 · 對話式建站探索',wizard:'正在釐清你的網站需求',styles:'選擇喜歡的網站視覺',review:'整理精準修改意見',brief:'專案需求摘要已準備'};$('modeLabel').textContent=labels[mode]||labels.home}
-function closePanel(){Object.values(floatingPanels).forEach(e=>{e.classList.add('hidden');e.querySelector('.hud-content').replaceChildren()});panel=null;context=null}
+function setMode(mode){state.mode=mode;const labels={home:'就緒 · 準備開始網站規劃',wizard:'步驟 1 / 正在理解你的需求',styles:'步驟 2 / 正在挑選喜歡的風格',review:'步驟 3 / 正在整理修改方向',brief:'步驟 4 / 需求書已整理完成'};
+ $('modeLabel').textContent=labels[mode]||labels.home;
+ document.querySelectorAll('[data-jump]').forEach(b=>{b.classList.toggle('is-active',b.dataset.jump===mode);b.setAttribute('aria-current',b.dataset.jump===mode?'step':'false')});
+}
+function refreshPanels(){
+ const active=Object.values(floatingPanels).filter(p=>!p.classList.contains('hidden'));
+ hero.classList.toggle('has-panel',active.length>0);
+}
+function closePanel(){Object.values(floatingPanels).forEach(e=>{e.classList.add('hidden');e.querySelector('.hud-content').replaceChildren()});panel=null;context=null;recentPanels=[];refreshPanels()}
 function openPanel(title,windowMode=state.mode){
  panel=floatingPanels[windowMode]||floatingPanels.wizard;
  context=panel.querySelector('.hud-content');
  panel.querySelector('.hud-title').textContent=title;
  context.replaceChildren();
  panel.classList.remove('hidden');
+ recentPanels=recentPanels.filter(p=>p!==panel);recentPanels.push(panel);
+ while(recentPanels.length>2){const oldest=recentPanels.shift();oldest.classList.add('hidden')}
  const wrapper=panel.closest('.float-position');wrapper.style.zIndex=String(++topLayer);
- if(matchMedia('(max-width: 800px)').matches)setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+ refreshPanels();
+ if(matchMedia('(max-width: 740px)').matches)setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}),40);
 }
 document.querySelectorAll('.hud-close').forEach(btn=>btn.addEventListener('click',()=>{
  const p=btn.closest('.hud-panel');p.classList.add('hidden');
+ recentPanels=recentPanels.filter(x=>x!==p);
  if(p===panel){panel=null;context=null}
+ refreshPanels();
 }));
 document.querySelectorAll('.hud-panel').forEach(p=>{
  p.addEventListener('pointerdown',()=>{p.closest('.float-position').style.zIndex=String(++topLayer)}, {passive:true});
@@ -41,7 +55,7 @@ document.querySelectorAll('.hud-panel').forEach(p=>{
 document.querySelectorAll('.hud-window-head').forEach(header=>{
  header.style.cursor='grab';let drag=null;
  header.addEventListener('pointerdown',event=>{
-   if(event.target.closest('button')||matchMedia('(max-width: 800px)').matches)return;
+   if(event.target.closest('button')||matchMedia('(max-width: 740px)').matches)return;
    const wrapper=header.closest('.float-position');
    drag={x:event.clientX,y:event.clientY,dx:Number(wrapper.dataset.dx||0),dy:Number(wrapper.dataset.dy||0)};
    wrapper.style.zIndex=String(++topLayer);
@@ -53,7 +67,8 @@ document.querySelectorAll('.hud-window-head').forEach(header=>{
    const wrapper=header.closest('.float-position');
    const dx=drag.dx+event.clientX-drag.x,dy=drag.dy+event.clientY-drag.y;
    wrapper.dataset.dx=String(dx);wrapper.dataset.dy=String(dy);
-   wrapper.style.transform='translate('+dx+'px,'+dy+'px)';
+   wrapper.style.setProperty('--drag-x',Math.max(-240,Math.min(240,dx))+'px');
+   wrapper.style.setProperty('--drag-y',Math.max(-160,Math.min(160,dy))+'px');
  });
  function stopDrag(){drag=null;header.style.cursor='grab'}
  header.addEventListener('pointerup',stopDrag);header.addEventListener('pointercancel',stopDrag);
@@ -61,7 +76,7 @@ document.querySelectorAll('.hud-window-head').forEach(header=>{
 function el(tag,css,text){const e=document.createElement(tag);if(css)e.className=css;if(text!==undefined)e.textContent=text;return e}
 function action(text,fn,primary=false){const b=el('button','panel-btn'+(primary?' primary':''),text);b.type='button';b.addEventListener('click',fn);return b}
 function choices(items,selected,onClick){const grid=el('div','choice-grid');items.forEach(([value,title,sub])=>{const b=el('button','choice');b.type='button';b.setAttribute('aria-pressed',String(selected===value));b.append(el('strong','',title),el('small','',sub));b.addEventListener('click',()=>onClick(value));grid.append(b)});return grid}
-function homeQuick(){quick([{text:'◈ 幫我規劃網站',fn:()=>beginWizard()},{text:'◇ 看網站風格',fn:()=>beginStyles()},{text:'✧ 整理修改意見',fn:()=>beginReview()},{text:'⌁ 查看需求書',fn:()=>beginBrief()}])}
+function homeQuick(){quick([{text:'開始規劃我的網站 →',fn:()=>beginWizard()},{text:'先看設計範例',fn:()=>beginStyles()},{text:'我有修改意見',fn:()=>beginReview()},{text:'下載需求摘要',fn:()=>beginBrief()}])}
 function beginWizard(withMessage=true){setMode('wizard');if(withMessage)addMessage('assistant','沒問題。我不會先問你「要用什麼技術」。我們用五個商業問題，找到真正適合你的網站。\n你可以直接點選答案，隨時返回修改。');renderWizard()}
 function renderWizard(){const item=q[state.step];if(!item){beginStyles(false);return}setMode('wizard');openPanel('需求探索 · '+(state.step+1)+' / '+q.length,'wizard');
  context.append(el('p','context-caption',item.title+'\n'+item.hint));
@@ -71,7 +86,18 @@ function renderWizard(){const item=q[state.step];if(!item){beginStyles(false);re
  if(state.step<q.length-1){state.step++;addMessage('assistant','了解：'+labelFor(item.key,state.answers[item.key])+'。接著我們確認下一個關鍵問題。');renderWizard()}
  else {addMessage('assistant','你的商業需求有輪廓了。現在我會拿出幾種差異很大的網站範例，你直接選喜歡的就好。');beginStyles(false)}
  },true));context.append(footer);quick([{text:'看看風格範例',fn:()=>beginStyles()},{text:'先看我的需求摘要',fn:()=>beginBrief()}])}
-function beginStyles(withMessage=true){setMode('styles');if(withMessage)addMessage('assistant','我準備了四種不同的設計語言。你不需要說「CSS 要怎樣」，只要選出讓你覺得適合的那一種。選完也可以改品牌名稱和首頁標題。');renderStyles()}
+function beginStyles(withMessage=true){
+ setMode('styles');
+ if(withMessage)addMessage('assistant','下面有四種不同的網站範例。直接選你喜歡的，還能修改品牌名稱和首頁標題，立即看效果。');
+ const wizard=floatingPanels.wizard;
+ if(wizard && !wizard.classList.contains('hidden')){
+  const content=wizard.querySelector('.hud-content');content.replaceChildren();
+  content.append(el('p','context-caption','剛才確認的需求'));
+  for(const item of q){const row=el('div','review-item');row.append(el('strong','',item.title),el('small','',labelFor(item.key,state.answers[item.key])));row.style.marginBottom='7px';content.append(row)}
+  wizard.querySelector('.hud-title').textContent='已確認的需求';
+ }
+ renderStyles();
+}
 function renderStyles(){openPanel('視覺樣本 · STYLE SELECTOR','styles');context.append(el('p','context-caption','點選你最有感覺的風格。下面會立刻顯示對應的首頁樣本。'));
  const grid=el('div','style-grid');Object.entries(styleCatalog).forEach(([id,s])=>{const b=el('button','style');b.type='button';b.setAttribute('aria-pressed',String(state.style===id));const demo=el('div','style-demo '+id);demo.append(el('span','',id.toUpperCase()+' / VISUAL LANGUAGE'),el('strong','',s.short));b.append(demo,el('strong','',s.title),el('small','',s.desc));b.onclick=()=>{state.style=id;if(!state.headline)state.headline=s.headline;renderStyles()};grid.append(b)});context.append(grid);
  const style=styleCatalog[state.style];const preview=el('div','preview');preview.dataset.style=state.style;const navbar=el('div','preview-nav');navbar.append(el('strong','',state.brand||'你的品牌'),el('span','','關於｜服務｜聯絡'));const banner=el('div','preview-banner');banner.append(el('small','','YOUR BRAND / '+style.title),el('b','',state.headline||style.headline));preview.append(navbar,banner);context.append(preview);
@@ -104,8 +130,9 @@ function parseText(value){const msg=value.trim();if(!msg)return;addMessage('user
  if(/真人|客服|人工|聯絡|顧問/.test(s)){addMessage('assistant','正式服務會把真人審核、回覆時間、修改輪次與資安責任寫清楚。不過這個 Demo 尚未連接真人客服或建立商業收件管道，我不能冒充有人正在接洽。你可以先完成需求書，之後作為實際合作的起點。');homeQuick();return}
  if(/網站|官網|工作室|電商|landing|品牌|公司|創業/.test(s)){state.notes.push(msg);addMessage('assistant','我先記下你的背景：「'+msg.slice(0,80)+(msg.length>80?'…':'')+'」。為了避免猜錯，我會再問幾個真正影響網站效果的問題。');state.step=0;beginWizard(false);return}
  state.notes.push(msg);addMessage('assistant','我已把這段話保留在你的需求摘要，但目前還不能可靠判斷你的意思。你可以選一個方向，我再一步步幫你釐清：');homeQuick()}
-function reset(){state.mode='home';state.step=0;state.answers={};state.style='quiet';state.brand='';state.headline='';state.feedback=[];state.notes=[];state.selected='';msgs.replaceChildren();closePanel();document.querySelectorAll('.float-position').forEach(w=>{w.style.transform='';w.style.zIndex='';delete w.dataset.dx;delete w.dataset.dy});topLayer=20;setMode('home');intro()}
-function intro(){addMessage('assistant','你好，我是有譜 ◈\n\n想做網站，不需要先研究 AI 指令、設計術語或資訊安全。我會先理解你的目標，再在適當的時候顯示風格樣本、選項和修改工具。\n\n你想從哪裡開始？');homeQuick()}
+function reset(){state.mode='home';state.step=0;state.answers={};state.style='quiet';state.brand='';state.headline='';state.feedback=[];state.notes=[];state.selected='';msgs.replaceChildren();closePanel();document.querySelectorAll('.float-position').forEach(w=>{w.style.removeProperty('--drag-x');w.style.removeProperty('--drag-y');w.style.zIndex='';delete w.dataset.dx;delete w.dataset.dy});topLayer=20;setMode('home');intro()}
+function intro(){addMessage('assistant','你好，我是有譜。\n想做網站，不需要先懂 AI 或設計。\n\n我會幫你完成四步：① 釐清需求 → ② 選擇風格 → ③ 整理修改 → ④ 下載需求書。\n\n你想從哪裡開始？');homeQuick()}
+document.querySelectorAll('[data-jump]').forEach(b=>b.addEventListener('click',()=>({wizard:beginWizard,styles:beginStyles,review:beginReview,brief:beginBrief})[b.dataset.jump]()));
 $('resetBtn').addEventListener('click',reset);
 $('composer').addEventListener('submit',e=>{e.preventDefault();parseText($('userText').value)});
 $('userText').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();parseText($('userText').value)}});
