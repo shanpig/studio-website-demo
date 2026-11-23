@@ -22,10 +22,14 @@ jobs:
           node-version: '22'
       - name: Run site quality smoke checks
         run: node tests/smoke.cjs
-      - name: Install Playwright and Chromium for visual interaction checks
+      - name: Prepare browser testing tools
         run: |
           npm install --no-save playwright@1.56.0
-          npx playwright install --with-deps chromium
+          if command -v google-chrome >/dev/null 2>&1; then
+            echo "CHROME_BIN=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          else
+            npx playwright install --with-deps chromium
+          fi
       - name: Test desktop and mobile user journeys
         run: node tests/browser.cjs
       - name: Save browser screenshots
