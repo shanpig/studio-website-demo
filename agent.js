@@ -123,6 +123,7 @@ function help(){addMessage('assistant','我目前能做四件事：\n① 透過�
 function parseText(value){const msg=value.trim();if(!msg)return;addMessage('user',msg);$('userText').value='';const s=msg.toLowerCase();
  if(/重來|重新開始|reset/.test(s)){reset();return}
  if(/你好|哈囉|hello|嗨|hi\b/.test(s)){addMessage('assistant','你好！我可以幫你從一個大概想法，逐步整理到可執行的網站需求。你想先回答幾個問題，還是先看幾種風格？');homeQuick();return}
+ if(/(我想|我需要|想要|幫我|要做).*(網站|官網|網頁|landing)|建立.*(網站|官網)/.test(s)){state.notes.push(msg);addMessage('assistant','好，我先記下你的想法。我會先問五個能影響網站成效的問題，再幫你挑適合的風格。');state.step=0;beginWizard(false);return}
  if(/風格|範例|樣板|版型|配色|預覽|設計/.test(s)){beginStyles();return}
  if(/修改|回饋|調整|改動|不好看/.test(s)){beginReview();return}
  if(/需求書|摘要|下載|交付|文件/.test(s)){beginBrief();return}
