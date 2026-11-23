@@ -1,26 +1,33 @@
-// Studio acceptance smoke checks — not a substitute for browser/Lighthouse/security review.
+// No dependency smoke tests. These checks gate GitHub Pages deployment.
+// Full device/browser, Lighthouse and accessibility testing are still required before commercial launch.
 const fs=require('node:fs'),assert=require('node:assert/strict'),vm=require('node:vm');
-const html=fs.readFileSync('index.html','utf8'),css=fs.readFileSync('studio.css','utf8'),js=fs.readFileSync('studio.js','utf8');
-for(const file of ['index.html','studio.css','studio.js','favicon.svg','icon.svg']) assert(fs.existsSync(file),'missing '+file);
-new vm.Script(js); // JavaScript parses
-assert(html.includes('lang="zh-Hant"'));
-assert(html.includes('name="viewport"'));
-assert(html.includes('name="description"'));
-assert(html.includes('rel="icon"'));
-assert(html.includes('href="#content"'));
-assert(html.includes('id="samples"'));
-assert(html.includes('id="brief"'));
-assert(html.includes('id="stageScreen"'));
-assert(html.includes('id="wizardPanel"'));
-assert(html.includes('id="demoBrand"')&&html.includes('id="demoHeadline"'));
-assert(html.includes('data-style="quiet"')&&html.includes('data-style="bold"')&&html.includes('data-style="warm"')&&html.includes('data-style="clean"'));
-assert(css.includes('prefers-reduced-motion'));
-assert(css.includes(':focus-visible'));
-assert(css.includes('max-width:520px'));
-assert(js.includes('aria-pressed'));
-assert(js.includes('URL.createObjectURL')&&js.includes('application')===false);
-assert(js.includes('returnFocus')===false); // this iteration has no modal to mismanage
-assert(js.includes('資安')||html.includes('資安'));
-assert(html.includes('尚未')&&html.includes('正式'));
-assert(!html.includes('<script src="https://'), 'No third-party scripts beyond font CSS');
-console.log('PASS: studio assets, valid JS, sample variants, local discovery, basic accessibility and truthful disclaimers');
+const html=fs.readFileSync('index.html','utf8');
+const css=fs.readFileSync('agent.css','utf8');
+const js=fs.readFileSync('agent.js','utf8');
+for(const path of ['index.html','agent.css','agent.js','favicon.svg','icon.svg'])assert(fs.existsSync(path),'Missing required file: '+path);
+new vm.Script(js,{filename:'agent.js'});
+assert(html.includes('lang="zh-Hant"'),'page language missing');
+assert(html.includes('name="viewport"'),'mobile viewport missing');
+assert(html.includes('name="description"'),'description missing');
+assert(html.includes('rel="icon"'),'favicon missing');
+assert(html.includes('href="#conversation"'),'skip link missing');
+assert(html.includes('aria-live="polite"'),'live transcript status missing');
+assert(html.includes('id="mascot"'),'animated mascot missing');
+assert(html.includes('id="messages"'),'conversation transcript missing');
+assert(html.includes('id="contextPanel"'),'contextual tool layer missing');
+assert(html.includes('id="composer"'),'chat input missing');
+assert(html.includes('id="resetBtn"'),'reset button missing');
+assert(html.includes('src="./agent.js"')&&html.includes('href="./agent.css"'),'new assets not loaded');
+assert(css.includes('prefers-reduced-motion'),'reduced motion fallback missing');
+assert(css.includes(':focus-visible'),'keyboard focus indicators missing');
+assert(css.includes('max-width:460px'),'mobile responsive stylesheet missing');
+assert(js.includes('beginWizard')&&js.includes('beginStyles')&&js.includes('beginReview')&&js.includes('beginBrief'),'assistant workflow incomplete');
+assert(js.includes('URL.createObjectURL'),'brief download missing');
+assert(js.includes('aria-pressed'),'selection semantics missing');
+assert(js.includes('state.answers'),'no guided answers state');
+assert(js.includes('state.feedback'),'no revision tracking');
+assert(!/\bfetch\s*\(|XMLHttpRequest|sendBeacon/.test(js),'interactive demo must not transmit user information');
+const referenced=[...js.matchAll(/\$\('([^']+)'\)/g)].map(x=>x[1]);
+const missing=[...new Set(referenced)].filter(id=>!html.includes('id="'+id+'"'));
+assert.deepEqual(missing,[], 'missing referenced element IDs: '+missing.join(','));
+console.log('PASS — valid JS, DOM references, responsive mascot, contextual workflows, accessibility basics, privacy and export');
