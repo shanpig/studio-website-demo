@@ -2,6 +2,8 @@ name: Validate and deploy website
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,6 +23,7 @@ jobs:
       - name: Run site quality smoke checks
         run: node tests/smoke.cjs
   deploy:
+    if: github.event_name != 'pull_request'
     needs: validate
     environment:
       name: github-pages

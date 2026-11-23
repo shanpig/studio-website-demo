@@ -1,17 +1,12 @@
 <!doctype html>
-<html lang="zh-Hant"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#070c17"><meta name="description" content="有譜智能體 — 不用研究 AI 提示詞，就能透過對話挑選網站風格、釐清需求、整理修改意見並取得建站需求書。">
-<meta property="og:type" content="website"><meta property="og:title" content="有譜智能體｜網站的想法，交給我一起整理"><meta property="og:description" content="對話式科幻建站助手：風格選擇、精準提問、修改回饋與需求書。">
-<title>有譜智能體｜你的 AI 建站引導員</title><link rel="icon" href="./favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="./agent.css"><script defer src="./agent.js"></script>
-</head><body>
-<a class="skip" href="#conversation">跳至智能體對話</a><div class="bg-grid" aria-hidden="true"></div><div class="ambient" aria-hidden="true"></div>
-<div class="app">
-<header class="topbar"><a href="./" class="logo" aria-label="有譜智能體 首頁"><span class="logo-glyph">◈</span><span>有譜 智能體 <small>YOUPU / DESIGN INTELLIGENCE</small></span></a><div class="top-right"><span class="system-tag"><span class="status-dot"></span>INTERACTIVE CONCEPT · LOCAL SESSION</span><button class="small-button" id="resetBtn" type="button">重新開始 ↻</button></div></header>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#050916"><meta name="description" content="有譜 AI 智能體 — 中央科幻全息核心、動態浮動資料視窗，以對話協助規劃網站、挑選視覺風格、整理修改並下載需求書。"><meta property="og:type" content="website"><meta property="og:title" content="有譜 AI｜全息網站設計智能體"><meta property="og:description" content="與中央智能體對話，需要做決定時才展開互動式全息介面。"><title>有譜 AI｜全息網站設計智能體</title><link rel="icon" type="image/svg+xml" href="./favicon.svg"><link rel="stylesheet" href="./agent.css"><link rel="stylesheet" href="./hud.css"><script defer src="./agent.js"></script></head>
+<body><a class="skip" href="#conversation">跳至智能體對話</a><div class="hud-background" aria-hidden="true"></div>
+<div class="app"><header class="topbar"><a class="logo" href="./" aria-label="有譜智能體首頁"><span class="logo-glyph">◈</span><span>有譜 / YOUPU<small>HOLOGRAPHIC DESIGN INTELLIGENCE</small></span></a><div class="top-right"><span class="system-tag"><span class="status-dot"></span>CORE ONLINE · RULE-BASED DEMO</span><button type="button" class="small-button" id="resetBtn">重新開始 ↻</button></div></header>
 <main class="workspace">
-<section class="presence" aria-label="有譜虛擬智能體"><div class="orbit-field">
-<div class="ambient-glow" aria-hidden="true"></div><span class="orbit-label one" aria-hidden="true">CORE / ACTIVE</span><span class="orbit-label two" aria-hidden="true">DIALOGUE INTERFACE / 01</span>
-<svg class="mascot" id="mascot" data-mood="idle" role="img" aria-label="藍紫色發光、漂浮中的科幻智能體，隨對話狀態改變光效" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+<section class="holo-stage" aria-label="全息智能體控制舞台">
+<div class="stage-scanner" aria-hidden="true"></div><div class="stage-rings ring-one" aria-hidden="true"></div><div class="stage-rings ring-two" aria-hidden="true"></div><div class="stage-rings ring-three" aria-hidden="true"></div>
+<div class="stage-code code-top" aria-hidden="true">SYS.01 / CONTEXTUAL INTERFACE ACTIVE</div><div class="stage-code code-left" aria-hidden="true">VECTOR / NODE · A</div><div class="stage-code code-right" aria-hidden="true">HUMAN · MACHINE · DESIGN</div>
+<div class="core-center"><div class="core-aura" aria-hidden="true"></div><svg class="mascot" id="mascot" data-mood="idle" role="img" aria-label="懸浮式科幻全息人工智能核心，具有脈衝發光晶體與環狀掃描元件" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
 <defs>
 <radialGradient id="orb" cx="35%" cy="27%" r="77%"><stop offset="0%" stop-color="#b5fcff"/><stop offset="24%" stop-color="#3b9fc8"/><stop offset="62%" stop-color="#334d90"/><stop offset="89%" stop-color="#101c40"/><stop offset="100%" stop-color="#132a51"/></radialGradient>
 <radialGradient id="haloFill"><stop offset="5%" stop-color="#79f4ff" stop-opacity=".42"/><stop offset="80%" stop-color="#376da6" stop-opacity=".1"/><stop offset="100%" stop-color="#376da6" stop-opacity="0"/></radialGradient>
@@ -23,20 +18,23 @@
 <g class="halo-reverse"><circle cx="150" cy="150" r="115" fill="none" stroke="url(#lineGlow)" stroke-width="2" stroke-dasharray="56 110" opacity=".75"/><circle cx="150" cy="35" r="3" fill="#b0ecff"/><circle cx="267" cy="154" r="3" fill="#a4f5d0"/></g>
 <circle cx="150" cy="150" r="98" fill="#75a8ff" opacity=".15" filter="url(#light)"/>
 <g id="core"><path d="M150 56C205 56 245 98 245 150s-40 94-95 94-95-42-95-94 40-94 95-94Z" fill="url(#orb)" stroke="#7cbfe5" stroke-opacity=".6" stroke-width="2"/><path d="M82 113c32-64 118-54 139 3" fill="none" stroke="#e4ffff" stroke-width="7" opacity=".18" stroke-linecap="round"/><ellipse cx="150" cy="190" rx="64" ry="19" fill="#111e49" opacity=".18"/><path d="M67 144c22-18 45-22 83-22s69 6 83 22" fill="none" stroke="#8bcdff" stroke-width="1" opacity=".3"/><path d="M90 217c39 24 84 24 120 0" stroke="#83e4fb" stroke-width="1.5" opacity=".3" fill="none"/>
-<g id="eyes"><rect x="104" y="135" width="28" height="10" rx="5" fill="#c9fdff"/><rect x="168" y="135" width="28" height="10" rx="5" fill="#c9fdff"/><rect x="109" y="138" width="18" height="3" rx="2" fill="#fff" opacity=".7"/><rect x="173" y="138" width="18" height="3" rx="2" fill="#fff" opacity=".7"/></g>
-<path d="M132 173q18 17 36 0" fill="none" stroke="#a3dfff" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+<g id="eyes"><path d="M150 108l35 21v42l-35 21-35-21v-42z" fill="#0a2450" fill-opacity=".74" stroke="#b1f2ff" stroke-width="2.3"/><path d="M150 116l27 16v36l-27 16-27-16v-36z" fill="none" stroke="#85deff" stroke-width="1" stroke-dasharray="5 5"/><path d="M150 126l20 13v24l-20 13-20-13v-24z" fill="#53ddff" fill-opacity=".18" stroke="#d1f9ff" stroke-opacity=".88" stroke-width="1.3"/><path d="M137 151h26M150 138v26" stroke="#c9faff" stroke-opacity=".8" stroke-width="1.4"/></g>
+
 <circle class="pulse" cx="150" cy="204" r="5" fill="#7bffe0"/>
 </g>
 <path d="M47 209l-13 8 8 12M255 77l16-12-2-13" stroke="#92e6ff" stroke-opacity=".8" stroke-width="2" fill="none" stroke-linecap="round"/>
-</svg></div>
-<div class="identity"><span class="eyebrow">DESIGN COMPANION ONLINE</span><h1>你好，我是有譜。</h1><p>你說想完成什麼，我負責把模糊的想法整理清楚。需要選擇時，我才把對應的工具拿出來。</p></div>
-<div class="capabilities" aria-label="助理功能"><span>◈ 風格探索</span><span>◇ 精準提問</span><span>✧ 修改整理</span><span>⌁ 專案需求書</span></div></section>
-<section class="conversation" id="conversation" aria-label="與有譜互動">
-<div class="conv-top"><div class="conv-intro"><div class="conv-icon" aria-hidden="true">◈</div><div><strong>與有譜對話</strong><small id="modeLabel">就緒 · 對話式建站探索</small></div></div><span class="session">SESSION 001</span></div>
-<div class="messages" id="messages" role="log" aria-label="對話記錄" aria-live="polite" aria-relevant="additions"></div>
-<div class="context-panel hidden" id="contextPanel" aria-label="智能體提供的互動工具"><div class="context-head"><h2 id="contextTitle">互動元件</h2><button type="button" class="context-close" id="closeContext" aria-label="收起互動工具">×</button></div><div id="contextContent"></div></div>
+</svg><div class="core-name"><div>Y O U P U</div><span>INTERACTIVE DESIGN INTELLIGENCE</span></div></div>
+<div class="float-position float-wizard"><section class="context-panel hud-panel hidden" data-mode="wizard" aria-label="需求探索浮動視窗"><div class="hud-window-head"><span class="hud-number">01</span><div class="hud-headline"><small>DISCOVERY / 01</small><strong class="hud-title">需求探索</strong></div><button class="hud-close" type="button" aria-label="關閉需求探索視窗">×</button></div><div class="hud-content"></div><div class="hud-panel-tail">YOUPU / CONTEXT NODE / LOCAL</div></section></div>
+<div class="float-position float-styles"><section class="context-panel hud-panel hidden" data-mode="styles" aria-label="風格比較浮動視窗"><div class="hud-window-head"><span class="hud-number">02</span><div class="hud-headline"><small>VISUAL / 02</small><strong class="hud-title">風格比較</strong></div><button class="hud-close" type="button" aria-label="關閉風格比較視窗">×</button></div><div class="hud-content"></div><div class="hud-panel-tail">YOUPU / CONTEXT NODE / LOCAL</div></section></div>
+<div class="float-position float-review"><section class="context-panel hud-panel hidden" data-mode="review" aria-label="修改指令浮動視窗"><div class="hud-window-head"><span class="hud-number">03</span><div class="hud-headline"><small>ITERATION / 03</small><strong class="hud-title">修改指令</strong></div><button class="hud-close" type="button" aria-label="關閉修改指令視窗">×</button></div><div class="hud-content"></div><div class="hud-panel-tail">YOUPU / CONTEXT NODE / LOCAL</div></section></div>
+<div class="float-position float-brief"><section class="context-panel hud-panel hidden" data-mode="brief" aria-label="專案摘要浮動視窗"><div class="hud-window-head"><span class="hud-number">04</span><div class="hud-headline"><small>OUTPUT / 04</small><strong class="hud-title">專案摘要</strong></div><button class="hud-close" type="button" aria-label="關閉專案摘要視窗">×</button></div><div class="hud-content"></div><div class="hud-panel-tail">YOUPU / CONTEXT NODE / LOCAL</div></section></div>
+<div class="stage-status"><span class="status-dot"></span><span id="modeLabel">就緒 · 等待對話</span></div></section>
+<section class="conversation" id="conversation" aria-label="與有譜文字對話">
+<div class="conv-top"><div class="conv-intro"><div class="conv-icon" aria-hidden="true">◈</div><div><strong>與有譜對話</strong><small>在中央智能體旁開啟你的下一個決策</small></div></div><span class="session">DIALOGUE / 001</span></div>
+<div class="messages" id="messages" role="log" aria-label="智能體對話記錄" aria-live="polite" aria-relevant="additions"></div>
 <div class="suggestions" id="suggestions" aria-label="建議操作"></div>
-<form id="composer" class="composer"><label class="hidden" for="userText">輸入給有譜的訊息</label><textarea id="userText" rows="1" maxlength="1200" aria-label="輸入給有譜的訊息" placeholder="跟我說你想做什麼網站，或點選下方建議…" enterkeyhint="send"></textarea><button class="send" type="submit" aria-label="送出訊息">➤</button></form><div class="conv-foot">操作型概念 Demo · 規則式對話，未連接即時 AI／真人客服 · 內容只留在這次瀏覽器頁面</div>
-</section>
-</main><footer class="footer"><span>© 2026 有譜 STUDIO · INTERACTIVE CONCEPT</span><span>不收取聯絡資料、未啟用正式接案。技術與安全責任於正式合作時另行確認。</span><a href="https://github.com/shanpig/studio-website-demo" target="_blank" rel="noopener noreferrer">公開專案 ↗</a></footer>
+<form id="composer" class="composer"><label class="visually-hidden" for="userText">輸入給有譜的訊息</label><textarea id="userText" rows="1" maxlength="1200" aria-label="輸入給有譜的訊息" placeholder="描述你想做的網站，或點選建議開始…" enterkeyhint="send"></textarea><button class="send" type="submit" aria-label="送出訊息">➤</button></form>
+<div class="conv-foot">互動概念原型 · 規則式對話，尚未連接即時 AI 或真人服務 · 內容僅保留在此頁面</div>
+</section></main>
+<footer class="footer"><span>YOUPU / HOLOGRAPHIC PROTOTYPE · 2026</span><span>展示介面：非正式服務，無資料上傳或商業收件</span><a href="https://github.com/shanpig/studio-website-demo" target="_blank" rel="noopener noreferrer">GitHub 原始碼 ↗</a></footer>
 </div></body></html>
