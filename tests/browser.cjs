@@ -16,6 +16,8 @@ const {chromium}=require('playwright');
   assert(await desktop.locator('#speechText').innerText().then(s=>s.includes('有譜')),'first greeting missing');
   const core=await desktop.locator('#mascot').boundingBox();
   assert(core,'mascot not rendered');assert(Math.abs(core.x+core.width/2-720)<35,'mascot not centered');assert(core.width>=380,'central mascot too small');
+  const caption=await desktop.locator('.core-caption').boundingBox(),speechLabel=await desktop.locator('.speech-label').boundingBox();
+  assert(caption&&speechLabel&&caption.y+caption.height<speechLabel.y-8,'projected speech overlaps mascot identity');
   await desktop.screenshot({path:'screenshots/desktop-idle.png',fullPage:true});
   // A click on the mascot is an action: visible speaking effects plus projected text.
   await desktop.locator('#coreTrigger').click();
@@ -74,6 +76,7 @@ const {chromium}=require('playwright');
   assert(await mobile.locator('.hud-panel[data-mode="styles"]').isVisible(),'mobile style tool not visible');
   const clipped=await mobile.locator('.hud-panel[data-mode="styles"] .hud-content').evaluate(el=>el.scrollHeight>el.clientHeight+3);
   assert(!clipped,'mobile panel content unexpectedly clipped');
+  await mobile.waitForFunction(()=>document.querySelector('#speechMode')?.textContent==='READY');
   await mobile.screenshot({path:'screenshots/mobile-style.png',fullPage:true});
   assert((await mobile.locator('body').evaluate(x=>x.scrollWidth))<=395,'horizontal overflow');
   assert.deepEqual(errors,[],'runtime errors');
