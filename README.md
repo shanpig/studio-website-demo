@@ -30,3 +30,17 @@
 本網站是**規則式對話原型**，沒有連接任何大型語言模型、真人客服、CRM、付款、實際客戶資料庫或 AI 推論服務。網站的示範訊息與表單答案只在瀏覽器內使用，不向後端傳送。未來正式營業前必須建立授權、真人審核、資料保存與刪除機制、安全監控及服務合約。
 
 正式的視覺品質與效能驗收需要檢視 CI 截圖、真機操作、Lighthouse 及 WCAG 2.2 審核。**程式測試通過不代表美感或正式商業可用性已獲客戶驗證**。
+
+## v8 — The agent speaks from the center (interaction redesign)
+
+The fixed bottom chat dock has been removed. The central mascot is no longer only a decorative, vertically bobbing image:
+
+- Its most recent response is **projected directly beneath the core** using a progressive text-reveal effect.
+- The central optic reacts subtly to pointer direction; mechanical wings, lens ring, luminous voice emitters and a small waveform animate **during the response**, then settle when finished.
+- A compact command input replaces the full-width messenger panel; suggested next steps live next to the projected message.
+- Transcript history is available as an **optional drawer**, hidden by default; the customer is not forced to browse a chat log.
+- Business discovery, four website styles, structured revisions and downloadable requirements remain usable in floating task windows.
+- Respect `prefers-reduced-motion`: instant text rendering and reduced physical movement.
+- The assistant is still rule-driven, **not a connected LLM** and not a staffed human service; the visual speaking effect is not synthesized voice audio.
+
+CI now checks the presence-led experience, including speaking animations, the optional transcript, optical gaze, full guided journey, and mobile interaction screenshots. Visual elegance is still subject to real client acceptance and cannot be inferred from passing automated checks alone.
